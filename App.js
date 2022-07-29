@@ -49,11 +49,7 @@ function App() {
   const downloadFile = async () => {
     try {
       let fileUri =
-        FileSystem.documentDirectory +
-        nasa.title +
-        " " +
-        nasa.date +
-        ".jpg";
+        FileSystem.documentDirectory + nasa.title + " " + nasa.date + ".jpg";
       const { uri } = await FileSystem.downloadAsync(nasa.hdurl, fileUri);
       saveFile(uri);
     } catch (error) {
@@ -70,8 +66,10 @@ function App() {
   };
 
   const handleDownload = async () => {
-    downloadFile();
-    alert("Descarga finalizada");
+    if (nasa.media_type === 'image') {
+      downloadFile();
+      alert("Descarga finalizada");
+    }
   };
 
   return (
@@ -93,10 +91,12 @@ function App() {
             <Text style={styles.negrita}>Explanation:{"\n"} </Text>
             {nasa.explanation}
           </Text>
+          {/** 
           <Text h6>
             <Text style={styles.negrita}>HD:{"\n"} </Text>
             {nasa.hdurl}
           </Text>
+          */}
           {/** 
           <Text h6>
             <Text style={styles.negrita}>Media type:{"\n"} </Text>
@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     width: 220,
     margin: 20,
+    backgroundColor: "gray",
   },
   buttonContainer: {
     margin: 20,
