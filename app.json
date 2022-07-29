@@ -2,12 +2,12 @@
   "expo": {
     "name": "Infinity",
     "slug": "Infinity",
-    "version": "1.0.0",
+    "version": "0.2.0-alpha.1",
     "orientation": "portrait",
     "icon": "./assets/ic_launcher.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/cooltext.png.png",
+      "image": "./assets/cooltext.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

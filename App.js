@@ -20,6 +20,8 @@ import {
   ListItem,
   Avatar,
 } from "@rneui/themed";
+import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
 
 function App() {
   const [index, setIndex] = useState(0);
@@ -42,6 +44,35 @@ function App() {
   useEffect(() => {
     loadData();
   }, []);
+
+  //?....................................FUNCIÓN PARA DESCARGAR ARCHIVOS.............................
+  const downloadFile = async () => {
+    try {
+      let fileUri =
+        FileSystem.documentDirectory +
+        nasa.title +
+        " " +
+        nasa.date +
+        ".jpg";
+      const { uri } = await FileSystem.downloadAsync(nasa.hdurl, fileUri);
+      saveFile(uri);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const saveFile = async (fileUri) => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status === "granted") {
+      const asset = await MediaLibrary.createAssetAsync(fileUri);
+      await MediaLibrary.createAlbumAsync("Infinity", asset, false);
+    }
+  };
+
+  const handleDownload = async () => {
+    downloadFile();
+    alert("Descarga finalizada");
+  };
 
   return (
     <>
@@ -75,6 +106,13 @@ function App() {
             <Text style={styles.negrita}>Service version:{"\n"} </Text>
             {nasa.service_version}
           </Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Descargar"
+              buttonStyle={styles.button}
+              onPress={() => handleDownload()}
+            />
+          </View>
           <Text>
             {"\n"}
             {"\n"}
@@ -115,19 +153,19 @@ function App() {
             <ScrollView style={styles.scrollView}></ScrollView>
           </SafeAreaView>*/}
           <View style={styles.container}>
-          <Text h4 style={styles.negrita}>
-            {nasa.title}
-          </Text>
-          <TouchableOpacity onPress={toggleDialog1} style={styles.Image}>
-            <Image
-              source={{
-                uri: nasa.url,
-              }}
-              style={styles.Image}
-            />
-          </TouchableOpacity>
+            <Text h4 style={styles.negrita}>
+              {nasa.title}
+            </Text>
+            <TouchableOpacity onPress={toggleDialog1} style={styles.Image}>
+              <Image
+                source={{
+                  uri: nasa.url,
+                }}
+                style={styles.Image}
+              />
+            </TouchableOpacity>
           </View>
-          
+
           {/**
               <View>
                 <View style={styles.buttonContainer}>
@@ -161,7 +199,6 @@ const styles = StyleSheet.create({
     //paddingTop: StatusBar.currentHeight,
     width: "100%",
     height: "100%",
-
   },
   container: {
     flex: 1,
@@ -184,7 +221,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "95%",
     borderRadius: 9,
-    //resizeMode: "contain",
+    resizeMode: "contain",
   },
   negrita: {
     fontWeight: "bold",
