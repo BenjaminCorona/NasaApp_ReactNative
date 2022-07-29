@@ -1,13 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Image, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Button } from "@rneui/base";
-import { Tab, Text, TabView } from "@rneui/themed";
+import {
+  StyleSheet,
+  Image,
+  View,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
+//import { StatusBar } from "expo-status-bar";
+//import { Button } from "@rneui/base";
+import {
+  Tab,
+  Text,
+  TabView,
+  Button,
+  Dialog,
+  CheckBox,
+  ListItem,
+  Avatar,
+} from "@rneui/themed";
 
 function App() {
   const [index, setIndex] = useState(0);
-
   const [nasa, setNasa] = useState([]);
+
+  const [visible1, setVisible1] = useState(false);
+
+  const toggleDialog1 = () => {
+    setVisible1(!visible1);
+  };
 
   const loadData = async () => {
     const res = await fetch(
@@ -23,7 +45,44 @@ function App() {
 
   return (
     <>
-      <StatusBar style="auto" hidden={true} />
+      <Dialog
+        style={styles.Dialog}
+        isVisible={visible1}
+        onBackdropPress={toggleDialog1}
+      >
+        <ScrollView style={styles.scrollView2}>
+          <Text h6>
+            <Text style={styles.negrita}>Copyright:{"\n"} </Text>
+            {nasa.copyright}
+          </Text>
+          <Text h6>
+            <Text style={styles.negrita}>Date:{"\n"} </Text> {nasa.date}
+          </Text>
+          <Text h6>
+            <Text style={styles.negrita}>Explanation:{"\n"} </Text>
+            {nasa.explanation}
+          </Text>
+          <Text h6>
+            <Text style={styles.negrita}>HD:{"\n"} </Text>
+            {nasa.hdurl}
+          </Text>
+          {/** 
+          <Text h6>
+            <Text style={styles.negrita}>Media type:{"\n"} </Text>
+            {nasa.media_type}
+          </Text>*/}
+          <Text h6>
+            <Text style={styles.negrita}>Service version:{"\n"} </Text>
+            {nasa.service_version}
+          </Text>
+          <Text>
+            {"\n"}
+            {"\n"}
+          </Text>
+        </ScrollView>
+      </Dialog>
+      <StatusBar hidden={true} />
+
       {/*----------------------------------------------------------------------------------------*/}
       <Tab
         value={index}
@@ -32,78 +91,86 @@ function App() {
         variant="primary"
       >
         <Tab.Item
-          title="Daily"
+          title="DAILY"
           titleStyle={{ fontSize: 12 }}
           icon={{ name: "timer", type: "ionicon", color: "white" }}
         />
         <Tab.Item
-          title="Earth"
+          title="HOME"
           titleStyle={{ fontSize: 12 }}
           icon={{ name: "earth", type: "ionicon", color: "white" }} //heart
         />
         <Tab.Item
-          title="Exoplanets"
+          title="PLANETS"
           titleStyle={{ fontSize: 12 }}
           icon={{ name: "planet", type: "ionicon", color: "white" }} //rocket
         />
       </Tab>
       {/*----------------------------------------------------------------------------------------*/}
       <TabView value={index} onChange={setIndex} animationType="spring">
+        {/**--------------------------------------------Daily-------------------------------------*/}
         <TabView.Item style={styles.TabView}>
+          {/** 
+          <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.scrollView}></ScrollView>
+          </SafeAreaView>*/}
           <View style={styles.container}>
-            <Text h4>{nasa.title}</Text>
+          <Text h4 style={styles.negrita}>
+            {nasa.title}
+          </Text>
+          <TouchableOpacity onPress={toggleDialog1} style={styles.Image}>
             <Image
               source={{
-                uri: nasa.hdurl,
+                uri: nasa.url,
               }}
               style={styles.Image}
             />
-            <Text h6>
-              <Text style={styles.negrita}>Copyright:</Text> {nasa.copyright}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>Date:</Text> {nasa.date}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>Explanation:</Text>
-              {nasa.explanation}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>HD:</Text> {nasa.hdurl}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>Media type:</Text> {nasa.media_type}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>Service version:</Text>
-              {nasa.service_version}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>Title:</Text> {nasa.title}
-            </Text>
-            <Text h6>
-              <Text style={styles.negrita}>Url:</Text> {nasa.url}
-            </Text>
+          </TouchableOpacity>
           </View>
+          
+          {/**
+              <View>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Abrir"
+                    onPress={toggleDialog1}
+                    buttonStyle={styles.button}
+                  />
+                </View>
+              </View>
+               */}
         </TabView.Item>
+
+        {/**--------------------------------------------Earth--------------------------------------------*/}
         <TabView.Item style={styles.TabView}>
           <Text h1>Earth</Text>
         </TabView.Item>
+
+        {/**--------------------------------------------Exoplanets---------------------------------------*/}
         <TabView.Item style={styles.TabView}>
           <Text h1>Exoplanets</Text>
         </TabView.Item>
       </TabView>
-      {/*----------------------------------------------------------------------------------------*/}
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  container2: {
+    //flex: 1,
+    //paddingTop: StatusBar.currentHeight,
+    width: "100%",
+    height: "100%",
+
+  },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "white",
+    //alignItems: "center",
+    //justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    padding: 10,
   },
   TabView: {
     backgroundColor: "white",
@@ -114,14 +181,46 @@ const styles = StyleSheet.create({
     height: 3,
   },
   Image: {
-    width: 350,
-    height: 350,
+    width: "100%",
+    height: "95%",
     borderRadius: 9,
     //resizeMode: "contain",
   },
-  negrita: { fontWeight: "bold" },
-  cursiva: { fontStyle: "italic" },
-  subrayado: { textDecorationLine: "underline" },
+  negrita: {
+    fontWeight: "bold",
+    color: "gray",
+    fontSize: 17,
+    marginBottom: 10,
+  },
+  cursiva: {
+    fontStyle: "italic",
+  },
+  subrayado: {
+    textDecorationLine: "underline",
+  },
+  scrollView: {
+    padding: 15,
+    backgroundColor: "white",
+    //marginHorizontal: 20,
+  },
+  scrollView2: {
+    padding: 0,
+    backgroundColor: "white",
+    //marginHorizontal: 20,
+  },
+  button: {
+    borderRadius: 6,
+    width: 220,
+    margin: 20,
+  },
+  buttonContainer: {
+    margin: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  Dialog: {
+    margin: 90,
+  },
 });
 
 export default App;
