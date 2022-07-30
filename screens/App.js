@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, StatusBar, TouchableOpacity, Alert } from "react-native";
+import React from "react";
+import { SafeAreaView, StatusBar, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import { AntDesign } from "@expo/vector-icons";
-import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
 
-function App() {
+export default function App() {
   const recipes = [
     {
       name: "n1",
@@ -14,91 +12,34 @@ function App() {
     },
   ];
 
-  const [nasa, setNasa] = useState([]);
-
-  const [visible1, setVisible1] = useState(false);
-
-  const toggleDialog1 = () => {
-    setVisible1(!visible1);
-  };
-
-  const loadData = async () => {
-    const res = await fetch(
-      "https://api.nasa.gov/planetary/apod?api_key=Z41yZjEh7Mh3H7tI8jrdtXMx8tbiZrOrsYaupuAO"
-    );
-    const data = await res.json();
-    setNasa(data);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  //?....................................FUNCIÓN PARA DESCARGAR ARCHIVOS.............................
-  const downloadFile = async () => {
-    try {
-      let fileUri =
-        FileSystem.documentDirectory + nasa.title + " " + nasa.date + ".jpg";
-      const { uri } = await FileSystem.downloadAsync(nasa.hdurl, fileUri);
-      saveFile(uri);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const saveFile = async (fileUri) => {
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    if (status === "granted") {
-      const asset = await MediaLibrary.createAssetAsync(fileUri);
-      await MediaLibrary.createAlbumAsync("Infinity", asset, false);
-    }
-  };
-
-  const handleDownload = async () => {
-    if (nasa.media_type === "image") {
-      downloadFile();
-    }
-  };
-
-  const alertInfo = () => {
-    alert(nasa.explanation);
-  };
-
   return (
     <Container>
       <StatusBar barStyle="light-content" />
-      <RecipeBackground
-        source={{
-          uri: nasa.url,
-        }}
-      >
+      <RecipeBackground source={require("./assets/rufous.jpg")}>
         <SafeAreaView>
           <MenuBar>
             <Back>
               <TouchableOpacity>
                 <AntDesign name="arrowleft" size={24} color="#fff" />
               </TouchableOpacity>
-              <Text style={{ marginLeft: 10 }}>Imágen del día</Text>
+              <Text style={{ marginLeft: 10 }}>Daily</Text>
             </Back>
-            <TouchableOpacity onPress={() => handleDownload()}>
+            <TouchableOpacity>
               <AntDesign name="download" size={24} color="#FFF" />
             </TouchableOpacity>
           </MenuBar>
           <MainRecipe>
             <Text title heavy>
-              {nasa.title}
+              “Cosmic Cliffs” in the Carina Nebula
             </Text>
             <Divider />
-            <Text bold>{nasa.date}</Text>
-            <Text>{nasa.copyright}</Text>
+            <Text bold>July 12, 2022 11:</Text>
+            <Text>(NIRCam Image)</Text>
           </MainRecipe>
-
           <Button>
-            <TouchableOpacity onPress={alertInfo}>
-              <Text bold small>
-                Más...
-              </Text>
-            </TouchableOpacity>
+            <Text bold small>
+              Learn More
+            </Text>
           </Button>
         </SafeAreaView>
       </RecipeBackground>
@@ -113,9 +54,7 @@ function App() {
           {recipes.map((recipe, index) => {
             return (
               <Recipe key={index}>
-                <TouchableOpacity>
-                  <RecipeImage source={recipe.image} />
-                </TouchableOpacity>
+                <RecipeImage source={recipe.image} />
                 <RecipeInfo>
                   <Text dark bold>
                     {recipe.name}
@@ -124,9 +63,7 @@ function App() {
                     {recipe.info}
                   </Text>
                 </RecipeInfo>
-                <TouchableOpacity>
-                  <AntDesign name="right" size={18} color="#000" />
-                </TouchableOpacity>
+                <AntDesign name="right" size={18} color="#000" />
               </Recipe>
             );
           })}
@@ -228,4 +165,13 @@ const RecipeInfo = styled.View`
   margin-left: 12px;
 `;
 
-export default App;
+
+
+
+
+
+
+
+
+
+
